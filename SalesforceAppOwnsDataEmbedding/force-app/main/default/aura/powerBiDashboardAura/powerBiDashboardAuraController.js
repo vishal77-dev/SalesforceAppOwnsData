@@ -63,12 +63,7 @@
               embedUrl: embedUrl,
               accessToken: token,
               tokenType: 1,
-              settings: {
-                panes: {
-                  filters: { expanded: false, visible: false },
-                  pageNavigation: { visible: false }
-                }
-              }
+              pageView: 'fitToWidth'
             };
   
             // Embed the dashboard and display it within the div container.
