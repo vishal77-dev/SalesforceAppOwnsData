@@ -35,6 +35,14 @@ public with sharing class PowerBiEmbedManager {
         public String datasetId { get; set; } 
    }
     
+    public class PowerBiDashboard    {
+        public String id { get; set; } 
+        public String name { get; set; } 
+        public String webUrl { get; set; } 
+        public String embedUrl { get; set; }
+        public String appId { get; set; } 
+   }
+
     public class PowerBiEmbedToken    {
         public string token { get; set; } 
         public string tokenId { get; set; } 
@@ -58,6 +66,24 @@ public with sharing class PowerBiEmbedManager {
         public String error { get; set; } 
      }
     
+    public class PowerBiDashboardData    {
+    	@AuraEnabled
+        public String workspaceId { get; set; } 
+    	@AuraEnabled
+        public String dashboardId { get; set; } 
+    	@AuraEnabled
+        public String name { get; set; } 
+    	@AuraEnabled
+        public String embedUrl { get; set; } 
+    	@AuraEnabled
+        public String embedToken { get; set; } 
+    	@AuraEnabled
+        public DateTime embedTokenExpires { get; set; } 
+        @AuraEnabled
+        public String error { get; set; } 
+     }
+    
+
     public static String getPowerBiAccessToken() {
 
         // get auth settings from Custom Metadata Type reconrd
@@ -172,6 +198,82 @@ public with sharing class PowerBiEmbedManager {
         powerBiReportData.embedTokenExpires = embedToken.expiration;
         
         return powerBiReportData;            
+ 
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static PowerBiDashboardData getEmbeddingDataForDashboard(String WorkspaceId, String DashboardId) {
+
+        // get access token for Authorization header
+        String access_token = getPowerBiAccessToken();        
+
+        // Call to Power BI Service API to get report data for embedding        
+        HttpRequest reqGetDashboard = new HttpRequest();
+        reqGetDashboard.setMethod('GET');
+        String urlGetDashboard = 'https://api.powerbi.com/v1.0/myorg/groups/' + WorkspaceId + '/dashboards/' + DashboardId;
+        reqGetDashboard.setEndpoint(urlGetDashboard);
+        reqGetDashboard.setHeader('Authorization', 'Bearer ' + access_token);
+        
+        Http http = new Http();        
+        HttpResponse response = http.send(reqGetDashboard);
+        
+        // check response for success
+        if(response.getStatusCode()!=200){
+            System.debug('ERROR --- Getting Dashboard Data --- ERROR');
+            System.debug('Status Code: ' + response.getStatusCode());
+            PowerBiDashboardData getDashboardError = new PowerBiDashboardData();
+            getDashboardError.error = 'Get Dashboard Error: ' + response.getStatus();
+            return getDashboardError;            
+        }            
+    
+        // extract Power BI report data from JSON response
+        String responseJson = response.getBody();
+        PowerBiDashboard powerBiDashboard = (PowerBiDashboard)JSON.deserialize(responseJson, PowerBiDashboard.class);
+        
+        // send report info to debug window
+        System.debug('id: ' + PowerBiDashboard.id);       
+        System.debug('name: ' + PowerBiDashboard.name);  
+        System.debug('webUrl: ' + PowerBiDashboard.webUrl);      
+        System.debug('embedUrl: ' + PowerBiDashboard.embedUrl);       
+        System.debug('appId: ' + PowerBiDashboard.appId);        
+
+	    // Call to Power BI Service API to get embed token for report        
+        HttpRequest reqGetEmbedToken = new HttpRequest();
+        reqGetEmbedToken.setMethod('POST');
+        String urlGetEmbedToken = 'https://api.powerbi.com/v1.0/myorg/groups/' + WorkspaceId + '/dashboards/' + DashboardId + '/GenerateToken';
+        reqGetEmbedToken.setEndpoint(urlGetEmbedToken);
+        reqGetEmbedToken.setHeader('Authorization', 'Bearer ' + access_token);    
+        reqGetEmbedToken.setBody('{"accessLevel": "View"}');
+    
+        HttpResponse responseEmbedToken = http.send(reqGetEmbedToken);
+
+        // check response for success
+        if(responseEmbedToken.getStatusCode()!=200){
+            System.debug('ERROR --- Getting Embed Token --- ERROR');
+            System.debug('Status Code: ' + responseEmbedToken.getStatusCode());            
+            PowerBiDashboardData getEmbedTokenError = new PowerBiDashboardData();
+            getEmbedTokenError.error = 'Get Embed Token Error: ' + response.getStatus();
+            return getEmbedTokenError;            
+        }            
+
+        // extract Power BI embed token and expiration
+        PowerBiEmbedToken embedToken = (PowerBiEmbedToken)JSON.deserialize(responseEmbedToken.getBody(), PowerBiEmbedToken.class);
+        
+        // send report info to debug window
+        System.debug('EmbedToken: ' + embedToken.token);        
+        System.debug('EmbedToken ID: ' + embedToken.tokenId);        
+        System.debug('expiration: ' + embedToken.expiration);
+        
+        // create custom remote-able object to return to caller in browser 
+        PowerBiDashboardData PowerBiDashboardData = new PowerBiDashboardData();        
+        PowerBiDashboardData.workspaceId = WorkspaceId;
+        PowerBiDashboardData.dashboardId = DashboardId;
+        PowerBiDashboardData.name = powerBiDashboard.name;
+        PowerBiDashboardData.embedUrl = powerBiDashboard.embedUrl;
+        PowerBiDashboardData.embedToken = embedToken.token;
+        PowerBiDashboardData.embedTokenExpires = embedToken.expiration;
+        
+        return PowerBiDashboardData;            
  
     }
 
