@@ -27,7 +27,7 @@
       console.log("Embedding dashboard");
       component.set("v.errorMessage", undefined);
 
-      var action = component.get("c.getEmbeddingDataFordashboard");
+      var action = component.get("c.getEmbeddingDataForDashboard");
 
       console.log("Embedding dashboard 2");
 
@@ -63,7 +63,12 @@
               embedUrl: embedUrl,
               accessToken: token,
               tokenType: 1,
-              pageView: 'fitToWidth'
+              settings: {
+                panes: {
+                  filters: { expanded: false, visible: false },
+                  pageNavigation: { visible: false }
+                }
+              }
             };
   
             // Embed the dashboard and display it within the div container.
@@ -80,7 +85,20 @@
 
       $A.enqueueAction(action);
 
-      console.log("Embedding dashboard 4");
+      dashboard.on("tileClicked", function (event) {
+        console.log(event.detail);
+        var Reportembedurl = event.detail.reportEmbedUrl;
+        var ReportworkspaceId = Reportembedurl.split('groupId=')[1];
+        var eventReportId = Reportembedurl.split('reportId=')[1];
+        console.log('ReportId'+eventReportId+'WorkspaceId'+ReportworkspaceId);
+        helper.fetchReport(component,ReportworkspaceId,eventReportId);
+        //component.set("v.iframeUrl",Reportembedurl);
+    });
+
+      
     }
+  },
+  Gobacktodashboard : function (component, event, helper) { 
+    component.set("v.ShowDashboard",true);
   }
 });
