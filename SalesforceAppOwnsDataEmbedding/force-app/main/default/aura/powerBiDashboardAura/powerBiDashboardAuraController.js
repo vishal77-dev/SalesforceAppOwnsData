@@ -88,8 +88,18 @@
       dashboard.on("tileClicked", function (event) {
         console.log(event.detail);
         var Reportembedurl = event.detail.reportEmbedUrl;
+        var queryparams = Reportembedurl.split('?')[1];
+
+var params = queryparams.split('&');
+
+var pair = null,
+    data = [];
+
+params.forEach(function(d) {
+    pair = d.split('=');
+    data.push({key: pair[0], value: pair[1]});
         var ReportworkspaceId = Reportembedurl.split('groupId=')[1];
-        var eventReportId = Reportembedurl.split('reportId=')[1];
+        var eventReportId = data.reportId;
         console.log('ReportId'+eventReportId+'WorkspaceId'+ReportworkspaceId);
         helper.fetchReport(component,ReportworkspaceId,eventReportId);
         //component.set("v.iframeUrl",Reportembedurl);
