@@ -91,7 +91,8 @@ if (!workspaceIdIsValidGuid || !dashboardIdIsValidGuid) {
   });
     var eventReportId = data[0].value;
     console.log('ReportId'+eventReportId);
-    helper.fetchReport(component,workspaceId,eventReportId);
+    component.set("v.reportId",eventReportId);
+    //helper.fetchReport(component,workspaceId,eventReportId);
     //component.set("v.iframeUrl",Reportembedurl);
 });
 
