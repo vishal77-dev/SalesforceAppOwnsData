@@ -76,16 +76,9 @@ if (!workspaceIdIsValidGuid || !dashboardIdIsValidGuid) {
         var dashboard = powerbi.embed(embedContainer, config);
 
         console.log(dashboard);
-
-      }
-    }
-  });
-
-  console.log("Embedding dashboard 4");
-
-  $A.enqueueAction(action);
-
-  dashboard.on("tileClicked", function (event) {
+        
+        dashboard.off("tileClicked");
+        dashboard.on("tileClicked", function (event) {
     console.log(event.detail);
     var Reportembedurl = event.detail.reportEmbedUrl;
     var queryparams = Reportembedurl.split('?')[1];
@@ -101,6 +94,16 @@ if (!workspaceIdIsValidGuid || !dashboardIdIsValidGuid) {
     helper.fetchReport(component,workspaceId,eventReportId);
     //component.set("v.iframeUrl",Reportembedurl);
 });
+
+      }
+    }
+  });
+
+  console.log("Embedding dashboard 4");
+
+  $A.enqueueAction(action);
+
+  
 
   
 }
