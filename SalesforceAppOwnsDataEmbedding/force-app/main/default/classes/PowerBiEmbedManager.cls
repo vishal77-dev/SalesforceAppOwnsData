@@ -122,7 +122,7 @@ public with sharing class PowerBiEmbedManager {
         return access_token;
     }
    
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static PowerBiReportData getEmbeddingDataForReport(String WorkspaceId, String ReportId) {
 
         // get access token for Authorization header
@@ -201,7 +201,7 @@ public with sharing class PowerBiEmbedManager {
  
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static PowerBiDashboardData getEmbeddingDataForDashboard(String WorkspaceId, String DashboardId) {
 
         // get access token for Authorization header
