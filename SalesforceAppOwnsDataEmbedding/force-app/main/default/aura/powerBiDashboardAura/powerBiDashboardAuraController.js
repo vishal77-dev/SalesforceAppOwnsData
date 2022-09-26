@@ -91,6 +91,7 @@ if (!workspaceIdIsValidGuid || !dashboardIdIsValidGuid) {
   });
     var eventReportId = data[0].value;
     console.log('ReportId'+eventReportId);
+    component.set("v.ShowDashboard",false);
     component.set("v.reportId",eventReportId);
     //helper.fetchReport(component,workspaceId,eventReportId);
     //component.set("v.iframeUrl",Reportembedurl);
