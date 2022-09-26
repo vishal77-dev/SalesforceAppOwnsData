@@ -23,7 +23,7 @@
     </div>
   </lightning:card>
 </aura:if>
-<aura:if istrue ="{!!v.ShowDashboard}">
+<aura:if isTrue ="{!!v.ShowDashboard}">
 <lightning:card title="Embedded Power BI Report (AURA)" class="mainCard" iconName="utility:graph" >
   <aura:set attribute="actions">
     <lightning:button variant="neutral" 
