@@ -11,16 +11,3 @@
 .THIS .error-message:empty {
     display: none;
  }
-
-.THIS iframe {
-    border : unset;
-    border-radius : 5px;
-}
-
-.THIS .eachField.narrowRegion{
-    width:50%;
-}
-.THIS .eachField{
-    width:50%;
-    display:inline-block;
-}

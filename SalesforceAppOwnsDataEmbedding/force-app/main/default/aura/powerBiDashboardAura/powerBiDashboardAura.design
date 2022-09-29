@@ -1,4 +1,7 @@
 <design:component label="Power BI Dashboard (Aura)" >
+    <design:attribute name="name" label="Dashboard Name" description="Enter required name for target dashboard" />
     <design:attribute name="workspaceId" label="Workspace ID" description="Enter Workspace ID for target dashboard" />
     <design:attribute name="dashboardId" label="Dashboard ID" description="Enter Dashboard ID for target dashboard"  />
+    <design:attribute name="height" label="Dashboard Height" description="Enter required height for target dashboard" />
+    <design:attribute  name="BGColor" label="BackGround Color"  default="rgba(0, 255, 255, 1)" />
 </design:component>

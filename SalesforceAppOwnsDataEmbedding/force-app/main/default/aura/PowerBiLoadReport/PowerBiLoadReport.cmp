@@ -1,0 +1,22 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,lightning:isUrlAddressable,force:appHostable" access="global" controller="PowerBiEmbedManager" >
+    <aura:attribute name="workspaceId" type="String" default="" />
+    <aura:attribute name="reportId" type="String" default="" />
+    <aura:attribute name="report" type="Object" />
+    <aura:attribute name="errorMessage" type="String" default="" />
+    <ltng:require scripts="{!$Resource.powerbijs}" afterScriptsLoaded="{!c.afterScriptsLoaded}"/>
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.afterScriptsLoaded}" />
+    
+    <lightning:card >
+    <aura:set attribute="actions">
+    <lightning:button variant="neutral" 
+                      label="Refresh" 
+                      iconName="utility:refresh" 
+                      iconPosition="right" onclick="{!c.RefreshReport}"/>
+  </aura:set>
+    <div>
+        <div aura:id="error-message" class="error-message" >{!v.errorMessage}</div>
+        <div aura:id="embed-container" style="height:800px"></div>  
+    </div>
+    </lightning:card>
+    
+</aura:component>
